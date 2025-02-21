@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>神経衰弱ゲーム</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+
+<body>
+    <div id="start-screen">
+        <h1>神経衰弱ゲーム</h1>
+        <button id="start-button">スタート</button>
+    </div>
+    <div id="mission-screen" style="display: none;">
+        <div class="left-screen"></div>
+        <div class="right-screen"></div>
+        <div class="mission-text">
+            <h1>ミッション：神経衰弱</h1>
+            <p>すべてのペアを作れ！！</p>
+        </div>
+    </div>
+    <div class="memory-game" id="memory-game" style="display: none;"></div>
+    <div id="game-clear-screen" style="display: none;">
+        <p>ゲームクリア</p>
+        <h1>おめでとうございます！</h1>
+        <table>
+            <tr>
+                <th colspan="2">スコア</th>
+            </tr>
+            <tr>
+                <td colspan="2"><span id="score">0</span></td>
+            </tr>
+            <tr>
+                <th>手数</th>
+                <th>タイム</th>
+            </tr>
+            <tr>
+                <td><span id="times-flipped">0</span>回</td>
+                <td><span id="elapsed-time">0.00</span>秒</td>
+            </tr>
+        </table>
+        <div id="submit-score-form">
+            <input type="text" id="player-name" placeholder="ニックネームを入力">
+            <button id="submit-score-button">ランキングに登録</button>
+        </div>
+        <button id="restart-button">もう一度プレイ</button>
+    </div>
+    <div id="modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <p id="modal-message">登録中です...</p>
+        </div>
+    </div>
+    <script src="scripts/app.js"></script>
+</body>
+
+</html>
