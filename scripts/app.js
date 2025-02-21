@@ -327,7 +327,10 @@ submitScoreButton.addEventListener('click', () => {
         overlay.style.display = 'flex';
         modalMessage.style.display = 'block';
         modalText.style.display = 'none';
-        callGASWebApp(playerName, document.getElementById('score').textContent);
+        const score = document.getElementById('score').textContent;
+        const timesFlipped = document.getElementById('times-flipped').textContent;
+        const elapsedTime = document.getElementById('elapsed-time').textContent;
+        callGASWebApp(playerName, score, timesFlipped, elapsedTime);
     } else {
         alert('ニックネームを入力してください');
     }
@@ -373,18 +376,17 @@ function calculateScore(flips, time) {
     return Math.max(baseScore - flipPenalty - timePenalty, 0); // スコアが0未満にならないようにする
 }
 
-
-
-
 /**
  * GASのWebアプリにスコアを送信する関数
  * @param {string} name - プレイヤーの名前
  * @param {number} score - スコア
+ * @param {number} timesFlipped - 手数
+ * @param {number} elapsedTime - 経過時間
  */
-const callGASWebApp = async (name, score) => {
+const callGASWebApp = async (name, score, timesFlipped, elapsedTime) => {
     const gasWebAppUrl = "https://script.google.com/macros/s/AKfycbwkBfMFHxmAg0ZZpK_4iR22OOKgbMwlQpQcZqj_URxuD2mt9tRQUQpQ_hjOrmaGXuKM/exec";  // デプロイされたGASのURL
     // クエリパラメータをURLに追加
-    const url = gasWebAppUrl + "?name=" + encodeURIComponent(name) + "&score=" + encodeURIComponent(score);
+    const url = `${gasWebAppUrl}?name=${encodeURIComponent(name)}&score=${encodeURIComponent(score)}&steps=${encodeURIComponent(timesFlipped)}&time=${encodeURIComponent(elapsedTime)}`;
     // HTTP GET リクエストを送信
     fetch(url)
         .then(response => response.text())
