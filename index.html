@@ -42,15 +42,40 @@
             </tr>
         </table>
         <div id="submit-score-form">
-            <input type="text" id="player-name" placeholder="ニックネームを入力">
+            <input type="text" id="player-name" placeholder="ニックネームを入力(8文字まで)" maxlength="8">
             <button id="submit-score-button">ランキングに登録</button>
         </div>
         <button id="restart-button">もう一度プレイ</button>
     </div>
     <div id="modal" class="modal" style="display: none;">
         <div class="modal-content">
-            <p id="modal-message">登録中です...</p>
+            <p id="modal-message">登録中です</p>
+            <p id="modal-text">順位不明</p>
         </div>
+    </div>
+    <div id="ranking-nav">
+        <button id="ranking-button">ランキング</button>
+    </div>
+    <div id="overlay" style="display: none;"></div>
+    <div id="ranking-modal" style="display: none;">
+        <h1>ランキング</h1>
+        <div id="ranking-table-container">
+            <table id="ranking-table">
+                <thead>
+                    <tr>
+                        <th>順位</th>
+                        <th>ニックネーム</th>
+                        <th>スコア</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="3" id="ranking-modal-message">ランキングを取得中です</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <button id="back-to-title-button">戻る</button>
     </div>
     <script src="scripts/app.js"></script>
 </body>

@@ -88,7 +88,20 @@ const submitScoreButton = document.getElementById('submit-score-button');
  */
 const modal = document.getElementById('modal');
 const modalMessage = document.getElementById('modal-message');
+const modalText = document.getElementById('modal-text');
 
+
+/**
+ * ランキングボタンの要素
+ * @type {HTMLElement}
+ */
+const rankingButton = document.getElementById('ranking-button');
+const rankingModal = document.getElementById('ranking-modal');
+const rankingModalBackButton = document.getElementById('back-to-title-button');
+const rankingTableBody = document.querySelector('#ranking-table tbody');
+const rankingNav = document.getElementById('ranking-nav');
+
+const overlay = document.getElementById('overlay');
 /**
  * カード要素の配列
  * @type {HTMLElement[]}
@@ -181,6 +194,8 @@ function hideMissionScreen() {
         missionScreenLeft.classList.add('slideOutTopLeft');
         missionScreenRight.classList.add('slideOutBottomRight');
         gameStartScreen.style.display = 'none';
+        rankingNav.style.display = 'none';
+        rankingModal.style.display = 'none';
         gameClearScreen.style.display = 'none';
     }, 1000);
     setTimeout(() => {
@@ -309,6 +324,9 @@ submitScoreButton.addEventListener('click', () => {
         submitScoreButton.disabled = true;
         submitScoreForm.style.display = 'none';
         modal.style.display = 'flex';
+        overlay.style.display = 'flex';
+        modalMessage.style.display = 'block';
+        modalText.style.display = 'none';
         callGASWebApp(playerName, document.getElementById('score').textContent);
     } else {
         alert('ニックネームを入力してください');
@@ -324,6 +342,7 @@ function handleGameClear() {
         const elapsedTime = ((endTime - startTime) / 1000).toFixed(2); // 経過時間を秒単位で計算
         memoryGame.style.display = 'none';
         gameClearScreen.style.display = 'flex';
+        rankingNav.style.display = 'flex';
         body.style.overflowY = 'hidden';
         clearSound.currentTime = 0; // 再生位置をリセット
         clearSound.play(); // ゲームクリア時の音を再生
@@ -337,7 +356,7 @@ function handleGameClear() {
         lockBoard = false; // ボードのロックを解除
         submitScoreForm.style.display = 'flex';
         playerName.value = '';
-        modalMessage.textContent = '登録中です...';
+        modalMessage.textContent = '登録中です';
     }, 700);
 }
 
@@ -354,6 +373,14 @@ function calculateScore(flips, time) {
     return Math.max(baseScore - flipPenalty - timePenalty, 0); // スコアが0未満にならないようにする
 }
 
+
+
+
+/**
+ * GASのWebアプリにスコアを送信する関数
+ * @param {string} name - プレイヤーの名前
+ * @param {number} score - スコア
+ */
 const callGASWebApp = async (name, score) => {
     const gasWebAppUrl = "https://script.google.com/macros/s/AKfycbwkBfMFHxmAg0ZZpK_4iR22OOKgbMwlQpQcZqj_URxuD2mt9tRQUQpQ_hjOrmaGXuKM/exec";  // デプロイされたGASのURL
     // クエリパラメータをURLに追加
@@ -362,18 +389,105 @@ const callGASWebApp = async (name, score) => {
     fetch(url)
         .then(response => response.text())
         .then(data => {
-            modalMessage.textContent = data; // レスポンスをモーダルウィンドウに表示
+            modalMessage.style.display = 'none';
+            modalText.style.display = 'block';
+            modalText.textContent = data; // レスポンスをモーダルウィンドウに表示
             modal.addEventListener('click', () => {
+                overlay.style.display = 'none';
+                modal.style.display = 'none';
+                submitScoreButton.disabled = false;
+            });
+            overlay.addEventListener('click', () => {
+                overlay.style.display = 'none';
                 modal.style.display = 'none';
                 submitScoreButton.disabled = false;
             });
         })
         .catch(error => {
             console.error('Error:', error);
-            modalMessage.textContent = 'エラーが発生しました。もう一度お試しください。';
+            modalMessage.style.display = 'none';
+            modalText.style.display = 'block';
+            modalText.textContent = 'エラーが発生しました。もう一度お試しください。';
             modal.addEventListener('click', () => {
+                overlay.style.display = 'none';
+                modal.style.display = 'none';
+                submitScoreButton.disabled = false;
+            });
+            overlay.addEventListener('click', () => {
+                overlay.style.display = 'none';
                 modal.style.display = 'none';
                 submitScoreButton.disabled = false;
             });
         });
 }
+/**
+ * GASのアプリからランキングを取得する関数
+ * @param {number} num - ランキングの順位
+ */
+const getRanking = async (num) => {
+    const gasWebAppUrl = "https://script.google.com/macros/s/AKfycbwkBfMFHxmAg0ZZpK_4iR22OOKgbMwlQpQcZqj_URxuD2mt9tRQUQpQ_hjOrmaGXuKM/exec";  // デプロイされたGASのURL
+    // クエリパラメータをURLに追加
+    const url = gasWebAppUrl + "?ranking=" + encodeURIComponent(num);
+    // HTTP GET リクエストを送信
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            // ランキングテーブルをクリア
+            rankingTableBody.innerHTML = '';
+
+            // データをテーブルに追加
+            data.forEach(entry => {
+                const row = rankingTableBody.insertRow();
+                const rankCell = row.insertCell(0);
+                const nameCell = row.insertCell(1);
+                const scoreCell = row.insertCell(2);
+
+                rankCell.textContent = entry.rank;
+                nameCell.textContent = entry.name;
+                scoreCell.textContent = entry.score;
+            });
+            rankingModalBackButton.disabled = false;
+            overlay.addEventListener('click', () => {
+                overlay.style.display = 'none';
+                rankingModal.style.display = 'none';
+                rankingModalBackButton.disabled = true;
+                rankingButton.disabled = false;
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            rankingTableBody.innerHTML = '';
+            const row = rankingTableBody.insertRow();
+            const textCell = row.insertCell(0);
+            textCell.colSpan = 3;
+            textCell.textContent = 'ランキングの取得に失敗しました。';
+            rankingModalBackButton.disabled = false;
+            overlay.addEventListener('click', () => {
+                overlay.style.display = 'none';
+                rankingModal.style.display = 'none';
+                rankingModalBackButton.disabled = true;
+                rankingButton.disabled = false;
+            });
+        });
+}
+
+rankingModalBackButton.addEventListener('click', () => {
+    overlay.style.display = 'none';
+    rankingModal.style.display = 'none';
+    rankingModalBackButton.disabled = true;
+    rankingButton.disabled = false;
+});
+
+rankingButton.addEventListener('click', () => {
+    rankingModal.style.display = 'flex';
+    overlay.style.display = 'flex';
+    rankingButton.disabled = true;
+    rankingModalBackButton.disabled = true;
+    rankingTableBody.innerHTML = '';
+    const row = rankingTableBody.insertRow();
+    const textCell = row.insertCell(0);
+    textCell.colSpan = 3;
+    textCell.textContent = 'ランキングを取得中です';
+    textCell.id = "ranking-modal-message";
+    getRanking(20);
+});
