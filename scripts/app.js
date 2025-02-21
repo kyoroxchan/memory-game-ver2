@@ -95,7 +95,7 @@ const modalMessage = document.getElementById('modal-message');
  */
 const cards = [];
 
-const cardNum = 6; // カードのペアの数
+const cardNum = 14; // カードのペアの数
 let hasFlippedCard = false;
 let firstCard, secondCard;
 let lockBoard = false;
