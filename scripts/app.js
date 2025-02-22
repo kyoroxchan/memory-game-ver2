@@ -71,6 +71,11 @@ const startSound = new Audio('sounds/start-sound.mp3');
  */
 const clearSound = new Audio('sounds/clear-sound.mp3');
 /**
+ * ゲームクリア時の音声
+ * @type {HTMLAudioElement}
+ */
+const buttonSound = new Audio('sounds/button-sound.mp3');
+/**
  * スコアを送信するフォームの要素
  * @type {HTMLElement}
  */
@@ -101,7 +106,12 @@ const rankingModalBackButton = document.getElementById('back-to-title-button');
 const rankingTableBody = document.querySelector('#ranking-table tbody');
 const rankingNav = document.getElementById('ranking-nav');
 
+/**
+ * オーバーレイの要素
+ * @type {HTMLElement}
+ */
 const overlay = document.getElementById('overlay');
+
 /**
  * カード要素の配列
  * @type {HTMLElement[]}
@@ -320,6 +330,8 @@ function shuffle() {
 
 submitScoreButton.addEventListener('click', () => {
     const playerName = document.getElementById('player-name').value;
+    buttonSound.currentTime = 0; // 再生位置をリセット
+    buttonSound.play(); // ボタンクリック時の音を再生
     if (playerName) {
         submitScoreButton.disabled = true;
         submitScoreForm.style.display = 'none';
@@ -475,6 +487,8 @@ const getRanking = async (num) => {
 }
 
 rankingModalBackButton.addEventListener('click', () => {
+    buttonSound.currentTime = 0; // 再生位置をリセット
+    buttonSound.play(); // ボタンクリック時の音を再生
     overlay.style.display = 'none';
     rankingModal.style.display = 'none';
     rankingModalBackButton.disabled = true;
@@ -482,6 +496,8 @@ rankingModalBackButton.addEventListener('click', () => {
 });
 
 rankingButton.addEventListener('click', () => {
+    buttonSound.currentTime = 0; // 再生位置をリセット
+    buttonSound.play(); // ボタンクリック時の音を再生
     rankingModal.style.display = 'flex';
     overlay.style.display = 'flex';
     rankingButton.disabled = true;
