@@ -377,7 +377,16 @@ body {
     opacity: 0;
     z-index: 1001;
 }
-
+.mission-text h1{
+    margin-bottom: .2em;
+}
+.mission-text p{
+    margin: .3em;
+}
+.mission-text span {
+    font-size: .5em;
+    display: block;
+}
 .fadeIn {
     animation: fadeIn .5s 1s forwards;
 }
