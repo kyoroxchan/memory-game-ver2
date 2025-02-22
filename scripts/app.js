@@ -364,17 +364,18 @@ function handleGameClear() {
 }
 
 /**
- * スコアを計算する関数
+ * スコアを計算する関数（手数33,時間60で1万超え調整）
  * @param {number} flips - カードをめくった回数
  * @param {number} time - 経過時間（秒）
  * @returns {number} - 計算されたスコア
  */
 function calculateScore(flips, time) {
-    const baseScore = 10000;
-    const flipPenalty = flips * 100;
-    const timePenalty = Math.floor(time * 50); // 経過時間を少数で計算し、整数に切り捨て
-    return Math.max(baseScore - flipPenalty - timePenalty, 0); // スコアが0未満にならないようにする
+    const minFlips = cardNum; // 最小手数
+    const flipBonus = 40000 * Math.exp(-flips / (minFlips * 0.8)); // 手数が少ないほど高得点
+    const timeBonus = 80000 / (Math.log(time + 2) ** 1.6); // タイムが短いほど高得点
+    return Math.floor(flipBonus + timeBonus);
 }
+
 
 /**
  * GASのWebアプリにスコアを送信する関数
