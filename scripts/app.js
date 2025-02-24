@@ -125,6 +125,7 @@ let lockBoard = false;
 let matches = 0;
 let timesFlipped = 0;
 let startTime, endTime;
+let isGameActive = false; // ゲームがアクティブかどうかを示すフラグ
 
 startButton.addEventListener('click', startGame);
 restartButton.addEventListener('click', restartGame);
@@ -133,6 +134,7 @@ restartButton.addEventListener('click', restartGame);
  * ゲームを開始する関数
  */
 function startGame() {
+    isGameActive = true; // ゲームがアクティブであることを示すフラグ
     playStartSound();
     showMissionScreen();
     initializeGame();
@@ -348,6 +350,13 @@ submitScoreButton.addEventListener('click', () => {
     }
 });
 
+// ページリロードや閉じる際の確認
+window.addEventListener('beforeunload', (event) => {
+    if (isGameActive) {
+        event.preventDefault();
+        event.returnValue = ''; // モダンブラウザではこれが必要
+    }
+});
 /**
  * ゲームクリア時の処理を行う関数
  */
@@ -372,6 +381,8 @@ function handleGameClear() {
         submitScoreForm.style.display = 'flex';
         playerName.value = '';
         modalMessage.textContent = '登録中です';
+
+        isGameActive = false; // ゲームクリア時にフラグをリセット
     }, 700);
 }
 

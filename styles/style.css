@@ -645,11 +645,12 @@ body {
     }
 
     #player-name {
-        width: 60%;
+        width: 50%;
     }
 
     #submit-score-button {
-        width: 35%;
+        width: 40%;
+        font-size: 1.3em;
     }
 
     #ranking-modal {
